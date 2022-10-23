@@ -25,11 +25,13 @@ class LibraryManager:
         self.books_lst = [] 
         self.users_lst = []
         self.search_dic = {} # key name prefix value will be [book] 
+        self.borrowed_books_dic = {} # key will be book name value will be list of users borrowed that book 
 
 
     def add_book(self, book: Book):
         self.books_lst.append(book) 
         self.add_book_to_search_dic(book)
+        self.borrowed_books_dic[book.name] = [] # intialise empty array of users 
 
 
     def print_library_books(self):
@@ -51,12 +53,31 @@ class LibraryManager:
         if len(search_result) > 0 :
             for book in search_result:
                 print(str(book))
+            return search_result    
         else:
             print("book does not exist")
+            return search_result
 
     def add_new_user(self, user: User):
         self.users_lst.append(user) 
 
+    def is_book_available(self, book_name):
+        # return book if available and empty if not 
+        result = self.search_library_books(book_name)
+
+        if len(result) == 1:
+            if result[0].quantity > 0:
+                return result[0]
+            else:
+                return None
+        else:
+            return None        
+            
+    def borrow_book(self, book_name, user_name):
+        book_obj = self.is_book_available(book_name)
+        if book_obj != None:
+            book_obj.quantity -= 1 
+            self.borrowed_books_dic[book_obj.name].append(user_name)
 
 
 class Library_Front_End():
@@ -112,6 +133,9 @@ class Library_Front_End():
                 
             elif choice == 5:
                 print("choice is 5")
+                book_name = input("book name to boorow: ")
+                user_name = input("user name who will borrow: ")
+                self.libr_manager.borrow_book(book_name, user_name)
             elif choice == 6:
                 print("choice is 6")
             else:
