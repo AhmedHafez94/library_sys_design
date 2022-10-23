@@ -1,3 +1,4 @@
+from collections import UserList
 from curses.ascii import isdigit
 from mimetypes import init
 
@@ -17,6 +18,9 @@ class User:
     def __init__(self,id, name) -> None:
         self.id = id 
         self.name = name 
+
+    def __str__(self) -> str:
+        return f"username {self.name}, id {self.id}"    
 
 
 
@@ -78,6 +82,36 @@ class LibraryManager:
         if book_obj != None:
             book_obj.quantity -= 1 
             self.borrowed_books_dic[book_obj.name].append(user_name)
+        else:
+            print("book is not available")
+
+    def return_book(self, book_name, user_name):
+        
+        if book_name in self.borrowed_books_dic:
+            if user_name in self.borrowed_books_dic[book_name]:
+                self.borrowed_books_dic[book_name].remove(user_name)
+                for book in self.books_lst:
+                    if book.name == book_name:
+                        book.quantity += 1
+
+            else:
+                print("user did not borrow this book")    
+        else:
+            print("book name is not borrowed before or book name may be incorrect")
+
+    def users_borrowd_book(self, book_name):
+        if book_name in self.borrowed_books_dic:
+            result = self.borrowed_books_dic[book_name]
+            result_str = ",".join(result)
+            print(f"people borrowed this book {book_name} {result_str}")
+        else:
+            print("no one borrowed this book or book name is not correct")    
+    def print_library_users(self):
+        if len(self.users_lst) > 0:
+            for user in self.users_lst:
+                print(str(user))
+        else:
+            print("no users yet")        
 
 
 class Library_Front_End():
@@ -133,11 +167,22 @@ class Library_Front_End():
                 
             elif choice == 5:
                 print("choice is 5")
-                book_name = input("book name to boorow: ")
+                book_name = input("book name to borrow: ")
                 user_name = input("user name who will borrow: ")
                 self.libr_manager.borrow_book(book_name, user_name)
             elif choice == 6:
                 print("choice is 6")
+                book_name = input("book name to return: ")
+                user_name = input("user name who will return: ")
+                self.libr_manager.return_book(book_name, user_name)
+            elif choice == 7:
+                print("choice is 7")
+                book_name = input("book name to list users who borrowed it: ")
+                self.libr_manager.users_borrowd_book(book_name)
+            elif choice == 8:
+                print("choice is 8") 
+                self.libr_manager.print_library_users()   
+
             else:
                 print("choice does not exist")
 
