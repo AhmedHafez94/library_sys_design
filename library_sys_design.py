@@ -23,6 +23,7 @@ class User:
 class LibraryManager: 
     def __init__(self) -> None:
         self.books_lst = [] 
+        self.users_lst = []
         self.search_dic = {} # key name prefix value will be [book] 
 
 
@@ -52,6 +53,11 @@ class LibraryManager:
                 print(str(book))
         else:
             print("book does not exist")
+
+    def add_new_user(self, user: User):
+        self.users_lst.append(user) 
+
+
 
 class Library_Front_End():
     def __init__(self) -> None:
@@ -99,6 +105,11 @@ class Library_Front_End():
                 self.libr_manager.search_library_books(prefix)
             elif choice == 4:
                 print("choice is 4")
+                user_id = input("enter user id: ")
+                user_name = input("enter user name: ")
+                new_user = User(user_id, user_name)
+                self.libr_manager.add_new_user(new_user)
+                
             elif choice == 5:
                 print("choice is 5")
             elif choice == 6:
